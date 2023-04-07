@@ -1,3 +1,4 @@
+using API.Services;
 using Common.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.Configure<WeatherApiOptions>(builder.Configuration.GetSection("
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 
 var app = builder.Build();
 
