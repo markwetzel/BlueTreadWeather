@@ -48,5 +48,4 @@ public class WeatherForecastController : ControllerBase
             return StatusCode(500, new { Error = "An error occurred while fetching weather data. Please try again later." });
         }
     }
-
 }
