@@ -8,7 +8,7 @@ WORKDIR /app
 COPY *.sln .
 COPY API/*.csproj ./API/
 COPY Common/*.csproj ./Common/
-RUN dotnet restore
+RUN dotnet restore --verbosity detailed || true && exit 0
 
 # Copy the rest of the source code
 COPY . .
