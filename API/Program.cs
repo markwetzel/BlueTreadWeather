@@ -1,7 +1,11 @@
 using API.Services;
 using Common.Options;
 
-var builder = WebApplication.CreateBuilder(args);
+// var builder = WebApplication.CreateBuilder(args);
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+var argsWithPort = new[] { $"--urls=http://*:{port}" }.Concat(args).ToArray();
+
+var builder = WebApplication.CreateBuilder(argsWithPort);
 
 // Configure CORS policy
 builder.Services.AddCors(options =>
@@ -22,6 +26,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 builder.Services.Configure<WeatherApiOptions>(builder.Configuration.GetSection("WeatherApi"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
