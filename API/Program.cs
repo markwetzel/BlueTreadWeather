@@ -15,7 +15,11 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                .WithOrigins("http://localhost:3000", "https://localhost:3000") // Replace these with the appropriate client origins
+                .WithOrigins(
+                    "http://localhost:3000",
+                    "https://localhost:3000",
+                    "https://blue-tread-weather-frontend.herokuapp.com"
+                )
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         }
