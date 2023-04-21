@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+ARG REACT_APP_API_URL
+RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env
 RUN npm run build
 
 FROM nginx:1.21
