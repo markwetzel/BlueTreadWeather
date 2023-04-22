@@ -4,14 +4,15 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 # Set the working directory
 WORKDIR /app
 
-# Copy the .csproj files and restore the NuGet packages
+# Copy the .sln files and restore the NuGet packages
 COPY *.sln .
 COPY API/*.csproj ./API/
 COPY Common/*.csproj ./Common/
 RUN dotnet restore --verbosity detailed || true && exit 0
 
 # Copy the rest of the source code
-COPY . .
+COPY API ./API
+COPY Common ./Common
 
 # Build the API project
 WORKDIR /app/API
