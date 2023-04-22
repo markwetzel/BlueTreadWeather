@@ -1,11 +1,7 @@
 build:
   docker:
-    api: API/Dockerfile
-    client: client/Dockerfile
-release:
-  image: api
-  command:
-    - echo 'Deploying API...'
-  image: client
-  command:
-    - echo 'Deploying client...'
+    api: backend/Dockerfile
+    client: frontend/Dockerfile
+run:
+  api: dotnet API.dll
+  client: nginx -g "daemon off;"
