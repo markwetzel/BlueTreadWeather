@@ -1,3 +1,11 @@
 build:
   docker:
-    web: client/Dockerfile
+    api: API/Dockerfile
+    client: client/Dockerfile
+release:
+  image: api
+  command:
+    - echo 'Deploying API...'
+  image: client
+  command:
+    - echo 'Deploying client...'
