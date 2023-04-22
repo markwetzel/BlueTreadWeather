@@ -3,5 +3,5 @@ build:
     api: backend/Dockerfile
     client: frontend/Dockerfile
 run:
-  api: dotnet API.dll
-  client: nginx -g "daemon off;"
+  worker: dotnet API.dll
+  web: nginx -g "daemon off;"
