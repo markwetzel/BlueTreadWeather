@@ -3,5 +3,11 @@ build:
     api: backend/Dockerfile
     client: frontend/Dockerfile
 run:
-  worker: dotnet API.dll
-  web: nginx -g "daemon off;"
+  web:
+    image: registry.heroku.com/blue-tread-weather/api
+    command:
+      - dotnet API.dll
+  worker:
+    image: registry.heroku.com/blue-tread-weather/client
+    command:
+      - nginx -g "daemon off;"
