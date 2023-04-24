@@ -1,17 +1,21 @@
-#!/bin/bash
+# Set the current directory to the directory where the script is located
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $scriptDir
 
-echo "Deploying frontend..."
-cd frontend
+# Deploy the frontend
+Write-Host "Deploying frontend..."
+Set-Location frontend
 heroku container:login
 heroku container:push web -a bt-weather-frontend --arg REACT_APP_API_URL=https://bt-weather-backend.herokuapp.com/api/v1
 heroku container:release web -a bt-weather-frontend
-cd ..
+Set-Location ..
 
-echo "Deploying backend..."
-cd backend
+# Deploy the backend
+Write-Host "Deploying backend..."
+Set-Location backend
 heroku container:login
 heroku container:push web -a bt-weather-backend
 heroku container:release web -a bt-weather-backend
-cd ..
+Set-Location ..
 
-echo "Deployment complete."
+Write-Host "Deployment complete."
