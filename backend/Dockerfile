@@ -6,13 +6,13 @@ WORKDIR /app
 
 # Copy the .sln files and restore the NuGet packages
 COPY *.sln .
-COPY API/*.csproj ./API/
-COPY Common/*.csproj ./Common/
+COPY ./API/*.csproj ./API/
+COPY ./Common/*.csproj ./Common/
 RUN dotnet restore --verbosity detailed || true && exit 0
 
 # Copy the rest of the source code
-COPY API ./API
-COPY Common ./Common
+COPY ./API ./API
+COPY ./Common ./Common
 
 # Build the API project
 WORKDIR /app/API

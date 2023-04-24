@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Common.Options;
 using System.Diagnostics;
 
+using Common.Utils;
+
 namespace API.Tests;
 
 public class WeatherServiceTests
@@ -18,15 +20,22 @@ public class WeatherServiceTests
 
     public WeatherServiceTests()
     {
+        string envPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".env")
+        );
+        DotEnv.Load(envPath);
+
         _configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
-            .AddUserSecrets<WeatherServiceTests>()
+            .AddEnvironmentVariables()
             .Build();
 
-        // Get the key from the user-secrets store 
-        weatherApiKey = _configuration["Keys:WeatherApiKey"];
+		// Get the key from the environment variable
+		weatherApiKey = _configuration["WeatherApiKey"];
 
-        Debug.WriteLine($"WeatherApi:DaysToForecast: {_configuration["WeatherApi:DaysToForecast"]}");
+        Debug.WriteLine(
+            $"WeatherApi:DaysToForecast: {_configuration["WeatherApi:DaysToForecast"]}"
+        );
     }
 
     [Fact]
@@ -37,24 +46,32 @@ public class WeatherServiceTests
         var configurationMock = new Mock<IConfiguration>();
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
 
-        configurationMock
-            .Setup(config => config["Keys:WeatherApiKey"])
-            .Returns(weatherApiKey);
+        configurationMock.Setup(config => config["WeatherApiKey"]).Returns(weatherApiKey);
 
         httpClientFactoryMock
             .Setup(http => http.CreateClient(It.IsAny<string>()))
             .Returns(new HttpClient());
 
-        var weatherApiOptions = Options.Create(new WeatherApiOptions
-        {
-            BaseUrl = _configuration["WeatherApi:BaseUrl"],
-            Endpoint = _configuration["WeatherApi:Endpoint"],
-            DaysToForecast = int.Parse(_configuration["WeatherApi:DaysToForecast"])
-        });
+        var weatherApiOptions = Options.Create(
+            new WeatherApiOptions
+            {
+                BaseUrl = _configuration["WeatherApi:BaseUrl"],
+                Endpoint = _configuration["WeatherApi:Endpoint"],
+                DaysToForecast = int.Parse(_configuration["WeatherApi:DaysToForecast"])
+            }
+        );
 
-        var weatherService = new WeatherService(loggerMock.Object, httpClientFactoryMock.Object, configurationMock.Object, weatherApiOptions, memoryCache);
+        var weatherService = new WeatherService(
+            loggerMock.Object,
+            httpClientFactoryMock.Object,
+            configurationMock.Object,
+            weatherApiOptions,
+            memoryCache
+        );
 
-        var weatherResult = await weatherService.GetWeatherData(new[] { "Tampa, FL", "Austin, TX", "Reno, NV" });
+        var weatherResult = await weatherService.GetWeatherData(
+            new[] { "Tampa, FL", "Austin, TX", "Reno, NV" }
+        );
 
         Assert.NotNull(weatherResult);
         Assert.IsAssignableFrom<IEnumerable<ForecastDTO>>(weatherResult);
@@ -69,9 +86,7 @@ public class WeatherServiceTests
         var configurationMock = new Mock<IConfiguration>();
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
 
-        configurationMock
-            .Setup(config => config["Keys:WeatherApiKey"])
-            .Returns(weatherApiKey);
+        configurationMock.Setup(config => config["WeatherApiKey"]).Returns(weatherApiKey);
 
         httpClientFactoryMock
             .Setup(http => http.CreateClient(It.IsAny<string>()))
@@ -79,26 +94,34 @@ public class WeatherServiceTests
 
         Debug.WriteLine(_configuration.ToString());
 
-        var weatherApiOptions = Options.Create(new WeatherApiOptions
-        {
-            BaseUrl = _configuration["WeatherApi:BaseUrl"],
-            Endpoint = _configuration["WeatherApi:Endpoint"],
-            DaysToForecast = int.Parse(_configuration["WeatherApi:DaysToForecast"])
-        });
+        var weatherApiOptions = Options.Create(
+            new WeatherApiOptions
+            {
+                BaseUrl = _configuration["WeatherApi:BaseUrl"],
+                Endpoint = _configuration["WeatherApi:Endpoint"],
+                DaysToForecast = int.Parse(_configuration["WeatherApi:DaysToForecast"])
+            }
+        );
 
-        var weatherService = new WeatherService(loggerMock.Object, httpClientFactoryMock.Object, configurationMock.Object, weatherApiOptions, memoryCache);
+        var weatherService = new WeatherService(
+            loggerMock.Object,
+            httpClientFactoryMock.Object,
+            configurationMock.Object,
+            weatherApiOptions,
+            memoryCache
+        );
 
         await weatherService.GetWeatherData(new[] { "Tampa, FL" });
         var cacheKey = "Tampa, FL";
-        var cachedResult = memoryCache.TryGetValue(cacheKey, out IEnumerable<ForecastDTO> cachedForecasts);
+        var cachedResult = memoryCache.TryGetValue(
+            cacheKey,
+            out IEnumerable<ForecastDTO> cachedForecasts
+        );
 
         Assert.True(cachedResult);
         Assert.NotNull(cachedForecasts);
         Assert.Single(cachedForecasts);
-        // This would be a strict check if given further development time 
+        // This would be a strict check if given further development time
         Assert.Contains(cachedForecasts, forecast => forecast.City.StartsWith("Tampa"));
     }
-
 }
-
-

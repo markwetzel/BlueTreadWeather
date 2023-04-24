@@ -3,26 +3,27 @@ version: "3.9"
 services:
   api:
     build:
-      context: .
-      dockerfile: API/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
-      - WeatherApiKey=0fea47bd033f4d768d3182340230504
+      - WeatherApiKey=${WeatherApiKey} # This is the environment variable that is used in the API to access the weather API
     networks:
       - bluetreadweather-network
 
   client:
     build:
-      context: client
+      context: ./frontend
     ports:
       - "3000:80"
     networks:
       - bluetreadweather-network
     environment:
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=http://api:5000
+      - PORT=80
 
 networks:
   bluetreadweather-network:

@@ -1,6 +1,8 @@
 build:
   docker:
     web: Dockerfile
+  args:
+    REACT_APP_API_URL: https://bt-weather-backend.herokuapp.com/api/v1
 run:
   web:
     command: nginx -g "daemon off;"
