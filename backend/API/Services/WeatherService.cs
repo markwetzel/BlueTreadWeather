@@ -42,7 +42,7 @@ public class WeatherService : IWeatherService
         try
         {
             var client = _httpClientFactory.CreateClient();
-            // var weatherApiKey = _configuration["Keys:WeatherApiKey"];
+
             var weatherApiKey = _configuration["WeatherApiKey"];
 
             if (string.IsNullOrEmpty(weatherApiKey))
