@@ -25,7 +25,8 @@ public class WeatherService : IWeatherService
         IHttpClientFactory httpClientFactory,
         IConfiguration configuration,
         IOptions<WeatherApiOptions> weatherApiOptions,
-        IMemoryCache cache)
+        IMemoryCache cache
+    )
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -41,7 +42,8 @@ public class WeatherService : IWeatherService
         try
         {
             var client = _httpClientFactory.CreateClient();
-            var weatherApiKey = _configuration["Keys:WeatherApiKey"];
+            // var weatherApiKey = _configuration["Keys:WeatherApiKey"];
+            var weatherApiKey = _configuration["WeatherApiKey"];
 
             if (string.IsNullOrEmpty(weatherApiKey))
             {
@@ -56,13 +58,16 @@ public class WeatherService : IWeatherService
 
             var tasks = cities.Select(async city =>
             {
-                var weatherApiUrl = $"{_weatherApiBaseUrl}{_weatherApiEndpoint}?key={weatherApiKey}&q={city}&days={_daysToForecast}";
+                var weatherApiUrl =
+                    $"{_weatherApiBaseUrl}{_weatherApiEndpoint}?key={weatherApiKey}&q={city}&days={_daysToForecast}";
 
                 var weatherApiResponse = await client.GetAsync(weatherApiUrl).ConfigureAwait(false);
 
                 weatherApiResponse.EnsureSuccessStatusCode();
 
-                var weatherJson = await weatherApiResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var weatherJson = await weatherApiResponse.Content
+                    .ReadAsStringAsync()
+                    .ConfigureAwait(false);
                 var forecastData = JsonSerializer.Deserialize<WeatherData>(weatherJson);
 
                 var cityForecast = new ForecastDTO
@@ -74,12 +79,16 @@ public class WeatherService : IWeatherService
                             forecastDay =>
                                 new DayForecastDTO
                                 {
-                                    // ISO 8601 for easier client-side processing 
+                                    // ISO 8601 for easier client-side processing
                                     Date = forecastDay.Date.ToString("O"),
                                     Text = forecastDay.Day.WeatherCondition.Description,
                                     Icon = forecastDay.Day.WeatherCondition.Icon,
-                                    MinimumTemperatureCelsius = forecastDay.Day.MinimumTemperatureCelsius,
-                                    MaximumTemperatureCelsius = forecastDay.Day.MaximumTemperatureCelsius,
+                                    MinimumTemperatureCelsius = forecastDay
+                                        .Day
+                                        .MinimumTemperatureCelsius,
+                                    MaximumTemperatureCelsius = forecastDay
+                                        .Day
+                                        .MaximumTemperatureCelsius,
                                     Humidity = forecastDay.Day.AverageHumidity
                                 }
                         )
@@ -90,11 +99,13 @@ public class WeatherService : IWeatherService
             });
 
             // Make API requests execute in-parallel
-            // I could not quickly find an option to supply multiple cities (in one request) to WeatherAPI 
+            // I could not quickly find an option to supply multiple cities (in one request) to WeatherAPI
             var forecasts = await Task.WhenAll(tasks);
 
             // Cache for an hour...seems reasonable for weather
-            var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(CacheDuration);
+            var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(
+                CacheDuration
+            );
             _cache.Set(cacheKey, forecasts, cacheEntryOptions);
 
             return forecasts;
@@ -115,10 +126,7 @@ public class WeatherService : IWeatherService
                 }
             }
 
-            throw new WeatherServiceException(
-                "An error occurred while fetching weather data.",
-                ex
-            );
+            throw new WeatherServiceException("An error occurred while fetching weather data.", ex);
         }
         catch (Exception ex)
         {
