@@ -1,7 +1,6 @@
 using API.Services;
 using Common.Options;
 
-// var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 var argsWithPort = new[] { $"--urls=http://*:{port}" }.Concat(args).ToArray();
 
