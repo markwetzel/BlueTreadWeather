@@ -1,5 +1,9 @@
 using API.Services;
 using Common.Options;
+using Common.Utils; 
+
+// Load environment variables from the .env file in /backend 
+DotEnv.Load(Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"));
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 var argsWithPort = new[] { $"--urls=http://*:{port}" }.Concat(args).ToArray();
@@ -9,20 +13,20 @@ var builder = WebApplication.CreateBuilder(argsWithPort);
 // Configure CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(
-        "AllowSpecificOrigins",
-        builder =>
-        {
-            builder
-                .WithOrigins(
-                    "http://localhost:3000",
-                    "https://localhost:3000",
-                    "https://bt-weather-frontend.herokuapp.com"
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        }
-    );
+	options.AddPolicy(
+		"AllowSpecificOrigins",
+		builder =>
+		{
+			builder
+				.WithOrigins(
+					"http://localhost:3000",
+					"https://localhost:3000",
+					"https://bt-weather-frontend.herokuapp.com"
+				)
+				.AllowAnyHeader()
+				.AllowAnyMethod();
+		}
+	);
 });
 
 // Add services to the container.
@@ -46,8 +50,8 @@ app.UseCors("AllowSpecificOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

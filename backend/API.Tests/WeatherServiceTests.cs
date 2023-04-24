@@ -20,20 +20,18 @@ public class WeatherServiceTests
 
     public WeatherServiceTests()
     {
-        // Load the .env file
         string envPath = Path.GetFullPath(
-            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".env")
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".env")
         );
         DotEnv.Load(envPath);
 
         _configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables()
-            .AddUserSecrets<WeatherServiceTests>()
             .Build();
 
-        // Get the key from the user-secrets store
-        weatherApiKey = _configuration["WeatherApiKey"];
+		// Get the key from the environment variable
+		weatherApiKey = _configuration["WeatherApiKey"];
 
         Debug.WriteLine(
             $"WeatherApi:DaysToForecast: {_configuration["WeatherApi:DaysToForecast"]}"
