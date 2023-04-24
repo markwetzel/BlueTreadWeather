@@ -1,4 +1,3 @@
-// src/hooks/useWeatherData.ts
 import { useState, useEffect } from "react";
 import { WeatherForecast } from "../interfaces/WeatherForecast";
 
