@@ -1,4 +1,4 @@
-# BlueTreadWeather
+# SkyStatus
 
 This is a weather forecasting application that consists of a .NET 6 backend API and a React frontend. The application can be run locally using Docker and Docker Compose.
 
@@ -10,18 +10,18 @@ This is a weather forecasting application that consists of a .NET 6 backend API 
 
 ## Installation
 
-To run BlueTreadWeather, please follow these steps:
+To run SkyStatus, please follow these steps:
 
 1. Clone the repository using the following command:
 
 ```
-git clone https://github.com/markwetzel/BlueTreadWeather
+git clone https://github.com/markwetzel/SkyStatus
 ```
 
-2. Navigate to the `BlueTreadWeather` directory:
+2. Navigate to the `SkyStatus` directory:
 
 ```
-cd BlueTreadWeather
+cd SkyStatus
 ```
 
 3. Create the `.env` file in the `backend` directory and add the following environment variable to it and substitute the value with your own API key from [WeatherApi](https://www.weatherapi.com/):
@@ -38,7 +38,7 @@ WeatherApiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 5. Open a web browser and navigate to http://localhost:3000/ to access the app.
 
-To stop and remove the running containers, execute the following command from the `BlueTreadWeather` directory:
+To stop and remove the running containers, execute the following command from the `SkyStatus` directory:
 
 ```
 docker-compose down
