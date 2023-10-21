@@ -30,7 +30,7 @@ cd BlueTreadWeather
 WeatherApiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-4. Build and run the API and client the included Docker Compose script:
+4. Build and run the API and client using the included Docker Compose script:
 
 ```
 .\run.ps1
